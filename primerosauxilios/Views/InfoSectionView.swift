@@ -19,7 +19,7 @@ final class InfoSectionView: UIView {
         layer.cornerCurve = .continuous
 
         let header = UILabel()
-        header.font = UIFont.preferredFont(forTextStyle: .title3).bold()
+        header.font = UIFont.preferredBoldFont(forTextStyle: .title3)
         header.adjustsFontForContentSizeCategory = true
         header.numberOfLines = 0
         header.text = title
@@ -67,20 +67,15 @@ final class InfoSectionView: UIView {
         let markerView: UIView
         switch marker {
         case .numbered:
-            let number = UILabel()
+            let number = CircleLabel()
             number.text = "\(index + 1)"
-            number.font = UIFont.preferredFont(forTextStyle: .subheadline).bold()
+            number.font = UIFont.preferredBoldFont(forTextStyle: .subheadline)
             number.adjustsFontForContentSizeCategory = true
             number.textColor = .white
             number.textAlignment = .center
             number.backgroundColor = tint
-            number.layer.cornerRadius = 14
-            number.layer.masksToBounds = true
-            number.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                number.widthAnchor.constraint(equalToConstant: 28),
-                number.heightAnchor.constraint(equalToConstant: 28),
-            ])
+            number.setContentHuggingPriority(.required, for: .horizontal)
+            number.setContentCompressionResistancePriority(.required, for: .horizontal)
             markerView = number
         case .symbol(let name):
             let icon = UIImageView(image: UIImage(systemName: name))
@@ -105,5 +100,20 @@ final class InfoSectionView: UIView {
             row.accessibilityLabel = text
         }
         return row
+    }
+}
+
+/// Label drawn inside a circle that grows with its text (e.g. with Dynamic Type).
+private final class CircleLabel: UILabel {
+    override var intrinsicContentSize: CGSize {
+        let textSize = super.intrinsicContentSize
+        let side = max(28, max(textSize.width, textSize.height) + 8)
+        return CGSize(width: side, height: side)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = bounds.height / 2
+        layer.masksToBounds = true
     }
 }

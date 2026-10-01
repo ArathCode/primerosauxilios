@@ -131,7 +131,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         content.textProperties.font = .preferredFont(forTextStyle: .headline)
         content.secondaryText = topic.summary
         content.secondaryTextProperties.color = .secondaryLabel
-        content.secondaryTextProperties.numberOfLines = 2
+        content.secondaryTextProperties.numberOfLines = 0
         content.textToSecondaryTextVerticalPadding = 4
         content.directionalLayoutMargins.top = 12
         content.directionalLayoutMargins.bottom = 12

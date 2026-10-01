@@ -39,9 +39,9 @@ final class TopicDetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             contentStack.topAnchor.constraint(equalTo: content.topAnchor, constant: 16),
             contentStack.bottomAnchor.constraint(equalTo: content.bottomAnchor, constant: -24),
-            contentStack.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: 20),
-            contentStack.trailingAnchor.constraint(equalTo: content.trailingAnchor, constant: -20),
-            contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40),
+            contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            content.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
         ])
 
         buildContent()
@@ -125,7 +125,7 @@ final class TopicDetailViewController: UIViewController {
 
         let title = UILabel()
         title.text = topic.title
-        title.font = UIFont.preferredFont(forTextStyle: .title1).bold()
+        title.font = UIFont.preferredBoldFont(forTextStyle: .title1)
         title.adjustsFontForContentSizeCategory = true
         title.numberOfLines = 0
         title.accessibilityTraits = .header
@@ -155,7 +155,7 @@ final class TopicDetailViewController: UIViewController {
 
         let label = UILabel()
         label.text = "Emergencia que pone en riesgo la vida. Llama al \(EmergencyCaller.number) o pide a alguien que llame mientras ayudas."
-        label.font = .preferredFont(forTextStyle: .subheadline).bold()
+        label.font = UIFont.preferredBoldFont(forTextStyle: .subheadline)
         label.adjustsFontForContentSizeCategory = true
         label.textColor = .white
         label.numberOfLines = 0

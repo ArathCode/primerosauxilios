@@ -18,7 +18,7 @@ final class EmergencyCallBar: UIView {
         config.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
             var attributes = attributes
-            attributes.font = UIFont.preferredFont(forTextStyle: .title3).bold()
+            attributes.font = UIFont.preferredBoldFont(forTextStyle: .title3)
             return attributes
         }
         config.title = "Llamar al \(EmergencyCaller.number)"
@@ -41,6 +41,9 @@ final class EmergencyCallBar: UIView {
         addSubview(separator)
         addSubview(button)
         button.addAction(UIAction { [weak self] _ in self?.onCall?() }, for: .primaryActionTriggered)
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.button.setNeedsUpdateConfiguration()
+        }
 
         NSLayoutConstraint.activate([
             separator.topAnchor.constraint(equalTo: topAnchor),
@@ -49,8 +52,8 @@ final class EmergencyCallBar: UIView {
             separator.heightAnchor.constraint(equalToConstant: 0.5),
 
             button.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            button.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            button.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            button.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
             button.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -8),
         ])
     }
@@ -84,8 +87,10 @@ final class EmergencyCallBar: UIView {
 }
 
 extension UIFont {
-    func bold() -> UIFont {
-        guard let descriptor = fontDescriptor.withSymbolicTraits(.traitBold) else { return self }
-        return UIFont(descriptor: descriptor, size: 0)
+    /// Bold variant of a text style that keeps scaling with Dynamic Type.
+    static func preferredBoldFont(forTextStyle style: TextStyle) -> UIFont {
+        let base = UIFont.preferredFont(forTextStyle: style, compatibleWith: UITraitCollection(preferredContentSizeCategory: .large))
+        let bold = base.fontDescriptor.withSymbolicTraits(.traitBold).map { UIFont(descriptor: $0, size: 0) } ?? base
+        return UIFontMetrics(forTextStyle: style).scaledFont(for: bold)
     }
 }
